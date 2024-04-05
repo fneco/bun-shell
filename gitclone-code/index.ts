@@ -1,17 +1,15 @@
 import { $ } from "bun";
-import { parseArgs } from "util";
 import { folderName } from "./modules/extract";
 
-const { positionals } = parseArgs({
-  args: Bun.argv,
-  strict: true,
-  allowPositionals: true,
-});
+const [_bun, _program, ...positionals] = Bun.argv;
+const repository = positionals.at(-1);
 
-const firstArg = positionals[2];
+if (repository === undefined) {
+  process.exit();
+}
 
-await $`git clone ${firstArg}`.then((x) => {
+await $`git clone ${positionals}`.then((x) => {
   if (x.exitCode === 0) {
-    return $`code ${folderName(firstArg)}`;
+    return $`code ${folderName(repository)}`;
   }
 });
