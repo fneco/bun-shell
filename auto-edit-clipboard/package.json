@@ -1,0 +1,16 @@
+{
+  "name": "auto-edit-clipboard",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "clipboard-event": "^1.6.0",
+    "clipboardy": "^4.0.0",
+    "install": "^0.13.0"
+  }
+}
