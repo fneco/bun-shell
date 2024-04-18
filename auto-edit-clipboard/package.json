@@ -11,6 +11,10 @@
   "dependencies": {
     "clipboard-event": "^1.6.0",
     "clipboardy": "^4.0.0",
-    "install": "^0.13.0"
+    "install": "^0.13.0",
+    "remeda": "^1.60.1"
+  },
+  "scripts": {
+    "start": "bun run index.ts ./config.ts"
   }
 }
