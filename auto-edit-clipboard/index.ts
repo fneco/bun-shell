@@ -1,5 +1,6 @@
 import { $ } from "bun";
 import clipboard from "clipboardy";
+import { access, constants } from "node:fs";
 import { join } from "path";
 import { parseArgs } from "util";
 import type { Config } from "./type";
@@ -22,10 +23,12 @@ const { positionals } = parseArgs({
 });
 const file = positionals[0];
 
-if (!Bun.file(file).exists()) {
-  console.log(`config.ts is required.`);
-  process.exit();
-}
+access(file, constants.R_OK, (err) => {
+  if (err !== null) {
+    console.log(`config.ts is required.`);
+    process.exit();
+  }
+});
 
 const config = (await import(file)).config as Config;
 
