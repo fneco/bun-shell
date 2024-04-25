@@ -1,5 +1,5 @@
 {
-  "name": "detect-port",
+  "name": "check-port",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {

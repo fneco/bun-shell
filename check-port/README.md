@@ -1,6 +1,6 @@
 TODO
 
-# detect-port
+# check-port
 
 To install dependencies:
 
