@@ -5,6 +5,8 @@ import { join } from "path";
 import { parseArgs } from "util";
 import type { Config } from "./type";
 
+const requiredFilename = "config.ts";
+
 // @ts-expect-error
 const clipboardListener = (await import("clipboard-event")).default;
 
@@ -21,11 +23,11 @@ const { positionals } = parseArgs({
   strict: true,
   allowPositionals: true,
 });
-const file = positionals[0];
+const file = positionals[0] || `./${requiredFilename}`;
 
 access(file, constants.R_OK, (err) => {
   if (err !== null) {
-    console.log(`config.ts is required.`);
+    console.log(`${requiredFilename} is required.`);
     process.exit();
   }
 });
@@ -36,3 +38,5 @@ clipboardListener.on("change", () => {
   const edited = config.onCopy(clipboard.readSync());
   clipboard.writeSync(edited);
 });
+
+console.log("start listening clipboard event.");
