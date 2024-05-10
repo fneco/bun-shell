@@ -17,9 +17,14 @@ export const startListening = async (
     process.exit();
   }
 
+  let hash = Bun.hash("");
   clipboardListener.on("change", () => {
-    const edited = onCopy(clipboard.readSync());
-    clipboard.writeSync(edited);
+    const clipboardString = clipboard.readSync();
+    if (hash !== Bun.hash(clipboardString)) {
+      const edited = onCopy(clipboardString);
+      clipboard.writeSync(edited);
+      hash = Bun.hash(edited);
+    }
   });
   console.log("start listening clipboard event.");
 
