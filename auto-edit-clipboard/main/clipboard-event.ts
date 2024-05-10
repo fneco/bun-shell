@@ -2,6 +2,7 @@ import { $ } from "bun";
 import clipboardListener from "clipboard-event";
 import clipboard from "clipboardy";
 import { join } from "path";
+import { onGetNew } from "../modules/util/onGetNew";
 
 export const startListening = async (
   onCopy: (str: string) => string
@@ -19,12 +20,11 @@ export const startListening = async (
 
   let hash = Bun.hash("");
   clipboardListener.on("change", () => {
-    const clipboardString = clipboard.readSync();
-    if (hash !== Bun.hash(clipboardString)) {
+    onGetNew(clipboard.readSync(), (clipboardString) => {
       const edited = onCopy(clipboardString);
       clipboard.writeSync(edited);
-      hash = Bun.hash(edited);
-    }
+      return edited;
+    });
   });
   console.log("start listening clipboard event.");
 

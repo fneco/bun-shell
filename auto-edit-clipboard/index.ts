@@ -1,7 +1,5 @@
 import { watch } from "fs/promises";
-import { startListening } from "./modules/clipboard-event";
-import { importConfig } from "./modules/import-config";
-import { parseArgs } from "./modules/parse-args";
+import { importConfig, parseArgs, startListening } from "./main";
 
 const { absolutePathToConfig: path } = await parseArgs();
 
