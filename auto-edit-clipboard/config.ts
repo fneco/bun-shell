@@ -32,4 +32,6 @@ export default {
 
     addMDBulletPoints
   ),
+  // onCopy: () => "yes",
+  watch: true,
 } satisfies Config;

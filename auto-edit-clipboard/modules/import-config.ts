@@ -1,7 +1,8 @@
 import type { Config } from "../type";
 
 export const importConfig = async (filename: string) => {
-  return import(filename)
+  // https://www.npmjs.com/package/dynamic-import-no-cache
+  return import(`${filename}?${Date.now()}`)
     .then((module) => {
       if (!("default" in module)) {
         return Promise.reject(
