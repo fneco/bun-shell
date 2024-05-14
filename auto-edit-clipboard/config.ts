@@ -9,7 +9,7 @@ const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^[●]\s?(.*)$/gm, "- $1");
+  str.replace(/^[●|·]\s?(.*)$/gm, "- $1");
 
 const joinAlphabetText = (str: string) =>
   str.replace(/([\w|\.|\,])(\r\n|\n|\r)([\w])/gm, "$1 $3");
@@ -19,10 +19,18 @@ const splitJPTextByPunctuationMark = (str: string) =>
   str.replace(/。\s?/g, "。\n").replace(/(\r\n|\n|\r)$/g, "");
 
 const addMDBulletPoints = (str: string) => str.replace(/^([^-].*)$/gm, "- $1");
-const suppressDots = (str: string) => str.replace(/\.{4,}/gm, "...");
+const suppressDots = (str: string) =>
+  str
+    .replace(/\.{4,}/gm, "...")
+    .replace(/(· )/gm, "·")
+    .replace(/(·){4,}/gm, "···");
 const addH2 = (str: string) => str.replace(/^第(.*)章/gm, "## 第 $1 章");
+const addH3 = (str: string) => str.replace(/^(\d+\.\d+ )/gm, "### $1");
+const tmp = (str: string) =>
+  str.replace(/^(.+)$/gm, "- $1").replace(/- #/g, "#");
 
 // examples
+const indexToMD = piped(suppressDots, addH2, addH3, tmp);
 const normalizeEnglishComment = piped(deleteComment, joinAlphabetText);
 const normalizeJpPDF = piped(
   normalizeBulletPoints,
