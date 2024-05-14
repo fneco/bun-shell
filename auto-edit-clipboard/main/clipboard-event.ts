@@ -18,7 +18,6 @@ export const startListening = async (
     process.exit();
   }
 
-  let hash = Bun.hash("");
   clipboardListener.on("change", () => {
     onGetNew(clipboard.readSync(), (clipboardString) => {
       const edited = onCopy(clipboardString);

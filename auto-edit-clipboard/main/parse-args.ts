@@ -2,7 +2,7 @@ import { access, constants } from "node:fs";
 import { resolve as resolvePath } from "node:path";
 import { parseArgs as parseArgsUtil } from "util";
 
-const requiredFilename = "config.ts";
+const requiredFilename = "config.js";
 
 export const parseArgs = async (): Promise<{
   absolutePathToConfig: string;
