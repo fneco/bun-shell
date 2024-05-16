@@ -15,7 +15,6 @@
     "remeda": "^1.60.1"
   },
   "scripts": {
-    "start": "bun run index.ts",
-    "build:config": "bun build ./config.ts --target=bun --format esm > config.js"
+    "start": "bun run index.ts"
   }
 }
