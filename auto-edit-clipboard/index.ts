@@ -1,15 +1,15 @@
 import { watch } from "fs/promises";
+import pDebounce from "p-debounce";
 import { importConfig, parseArgs, startListening } from "./main";
 
 const { absolutePathToConfig: path } = await parseArgs();
 
-const getConfig = async () => importConfig(path);
+const getConfig = pDebounce(async () => importConfig(path), 200, {
+  before: true,
+});
 const config = await getConfig();
 
-const { restart } = await startListening({
-  onCopy: config.onCopy,
-  getOnCopy: getConfig,
-});
+const { restart } = await startListening(getConfig);
 
 if (config.watch ?? true) {
   const watcher = watch(path);

@@ -6,10 +6,9 @@ import { onGetNew } from "../modules/util/onGetNew";
 
 type OnCopy = (str: string) => string;
 
-export const startListening = async (args: {
-  getOnCopy: () => Promise<{ onCopy: OnCopy }>;
-  onCopy?: OnCopy;
-}): Promise<{
+export const startListening = async (
+  getOnCopy: () => Promise<{ onCopy: OnCopy }>
+): Promise<{
   restart: () => Promise<void>;
 }> => {
   try {
@@ -21,8 +20,8 @@ export const startListening = async (args: {
     process.exit();
   }
 
-  const listen = async (_onCopy?: OnCopy) => {
-    const onCopy = _onCopy ?? (await args.getOnCopy()).onCopy;
+  const listen = async () => {
+    const { onCopy } = await getOnCopy();
     clipboardListener.on("change", () => {
       onGetNew(clipboard.readSync(), (clipboardString) => {
         const edited = onCopy(clipboardString);
@@ -32,7 +31,7 @@ export const startListening = async (args: {
     });
     console.log("start listening clipboard event.");
   };
-  await listen(args.onCopy);
+  await listen();
 
   const restart = async () => {
     clipboardListener.stopListening();
