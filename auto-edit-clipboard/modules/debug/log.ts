@@ -1,12 +1,16 @@
 import { tap } from "remeda";
 
-let debug = false;
+let debug: boolean = false;
 // debug = true;
 
 let counter = 0;
-export const log = (txt?: string, initial?: true): ((x: string) => string) => {
-  if (!debug) return (x) => x;
-  if (initial) {
+export const log = (
+  txt?: string,
+  option?: { initial?: true; debug?: boolean }
+): ((x: string) => string) => {
+  const shouldDebug = option?.debug ?? debug;
+  if (!shouldDebug) return (x) => x;
+  if (option?.initial === true) {
     counter = 0;
   }
   const c = ++counter;
