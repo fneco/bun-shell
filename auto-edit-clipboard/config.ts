@@ -38,18 +38,17 @@ const normalizeJpPDF = piped(
   splitJPTextByPunctuationMark
 );
 const jpPDFIntoBulletPoints = piped(
-  normalizeBulletPoints,
-  log("before joinLines", true),
-  joinLines,
-  log("after joinLines"),
-  splitJPTextByPunctuationMark,
-  addMDBulletPoints,
-  log("after addMDBulletPoints")
+  log("before jpPDFIntoBulletPoints", { initial: true }),
+  normalizeJpPDF,
+  log("after jpPDFIntoBulletPoints"),
+  addMDBulletPoints
 );
 
 // example
 export default {
   // onCopy: normalizeEnglishComment,
+  // onCopy: normalizeJpPDF,
   onCopy: jpPDFIntoBulletPoints,
+  // onCopy: indexToMD,
   watch: true,
 } satisfies Config;
