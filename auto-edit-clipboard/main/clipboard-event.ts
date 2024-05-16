@@ -4,10 +4,13 @@ import clipboard from "clipboardy";
 import { join } from "path";
 import { onGetNew } from "../modules/util/onGetNew";
 
-export const startListening = async (
-  onCopy: (str: string) => string
-): Promise<{
-  restart: (anotherOnCopy: (str: string) => string) => void;
+type OnCopy = (str: string) => string;
+
+export const startListening = async (args: {
+  getOnCopy: () => Promise<{ onCopy: OnCopy }>;
+  onCopy?: OnCopy;
+}): Promise<{
+  restart: () => Promise<void>;
 }> => {
   try {
     clipboardListener.startListening();
@@ -18,20 +21,24 @@ export const startListening = async (
     process.exit();
   }
 
-  clipboardListener.on("change", () => {
-    onGetNew(clipboard.readSync(), (clipboardString) => {
-      const edited = onCopy(clipboardString);
-      clipboard.writeSync(edited);
-      return edited;
+  const listen = async (_onCopy?: OnCopy) => {
+    const onCopy = _onCopy ?? (await args.getOnCopy()).onCopy;
+    clipboardListener.on("change", () => {
+      onGetNew(clipboard.readSync(), (clipboardString) => {
+        const edited = onCopy(clipboardString);
+        clipboard.writeSync(edited);
+        return edited;
+      });
     });
-  });
-  console.log("start listening clipboard event.");
+    console.log("start listening clipboard event.");
+  };
+  await listen(args.onCopy);
 
-  const restart = (anotherOnCopy: (str: string) => string) => {
+  const restart = async () => {
     clipboardListener.stopListening();
     clipboardListener.removeAllListeners(["change"]); // https://nodejs.org/api/events.html#emitterremovealllistenerseventname
 
-    startListening(anotherOnCopy);
+    return listen();
   };
 
   return { restart };

@@ -3,14 +3,18 @@ import { importConfig, parseArgs, startListening } from "./main";
 
 const { absolutePathToConfig: path } = await parseArgs();
 
-const config = await importConfig(path);
+const getConfig = async () => importConfig(path);
+const config = await getConfig();
 
-const { restart } = await startListening(config.onCopy);
+const { restart } = await startListening({
+  onCopy: config.onCopy,
+  getOnCopy: getConfig,
+});
 
 if (config.watch ?? true) {
   const watcher = watch(path);
   for await (const event of watcher) {
     console.log(`Detected ${event.eventType} in ${event.filename}`);
-    restart((await importConfig(path)).onCopy);
+    await restart();
   }
 }
