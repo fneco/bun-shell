@@ -28,7 +28,7 @@ async function build() {
 await build();
 
 if (watch) {
-  const watcher = bunWatch(process.cwd());
+  const watcher = bunWatch(entrypoint);
   console.log(`start watching: ${entrypoint}`);
   for await (const event of watcher) {
     console.log(`Detected ${event.eventType} in ${event.filename}`);
