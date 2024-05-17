@@ -34,7 +34,7 @@ describe("concatToLast", () => {
   });
 });
 
-test("xxxx", () => {
+test("example 1", () => {
   expect(
     joinTextExpectBulletPoints(`このような目
 的のため、いくつか人気のライブラリがあります。
@@ -46,4 +46,13 @@ test("xxxx", () => {
 - gopkg.in/alecthomas/kingpin.v2
 - github.com/spf13/cobra
 次のサンプルは kingpinを使って検索エンジンを作った時のものです。 2つのサブコマンド create-indexと searchがあり、それぞれにフラグがあります。サブコマンドの前に共通のフラグ default-languageも定義しています。また、フラグの後の引数にも名前や型が設定でき、 --helpでヘルプがわかりやすく表示されます。`);
+});
+
+test("example 2", () => {
+  const input = `- モジュール（module） またはコンポーネント（component） ― アプリケーションの
+ソースコードの一部で、別々のフォルダで管理され、別々のバイナリファイルとしてビ
+ルドされるもの。`;
+  const expected = `- モジュール（module） またはコンポーネント（component） ― アプリケーションの
+ソースコードの一部で、別々のフォルダで管理され、別々のバイナリファイルとしてビルドされるもの。`;
+  expect(joinTextExpectBulletPoints(input)).toBe(expected);
 });

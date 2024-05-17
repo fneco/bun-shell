@@ -1,4 +1,4 @@
-import { newLineReg } from "./regex";
+import { newLine } from "./regex";
 
 export const _shouldAppend = (line: string, acc: string[]) =>
   line.startsWith("- ") ||
@@ -13,7 +13,7 @@ export const _concatToLast = (acc: string[], element: string): string[] => {
 
 export const joinTextExpectBulletPoints = (str: string) => {
   return str
-    .split(newLineReg)
+    .split(newLine)
     .reduce<string[]>((acc, line) => {
       if (_shouldAppend(line, acc)) return [...acc, line];
       return _concatToLast(acc, line);

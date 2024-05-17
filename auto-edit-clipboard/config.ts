@@ -1,4 +1,6 @@
 import { piped } from "remeda";
+import { deleteSpaceBetweenNonAscii } from "./modules/converter/deleteSpaceBetweenNonAscii";
+import { joinAlphabetText } from "./modules/converter/joinAlphabetText";
 import { joinTextExpectBulletPoints } from "./modules/converter/joinTextExpectBulletPoints";
 import { log } from "./modules/debug/log";
 import type { Config } from "./type";
@@ -9,10 +11,8 @@ const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^[●|·]\s?(.*)$/gm, "- $1");
+  str.replace(/^[●|·|•|r]\s?(.*)$/gm, "- $1");
 
-const joinAlphabetText = (str: string) =>
-  str.replace(/([\w|\.|\,])(\r\n|\n|\r)([\w])/gm, "$1 $3");
 const joinLines = piped(joinAlphabetText, joinTextExpectBulletPoints);
 
 const splitJPTextByPunctuationMark = (str: string) =>
@@ -35,6 +35,7 @@ const normalizeEnglishComment = piped(deleteComment, joinAlphabetText);
 const normalizeJpPDF = piped(
   normalizeBulletPoints,
   joinLines,
+  deleteSpaceBetweenNonAscii,
   splitJPTextByPunctuationMark
 );
 const jpPDFIntoBulletPoints = piped(
@@ -47,8 +48,8 @@ const jpPDFIntoBulletPoints = piped(
 // example
 export default {
   // onCopy: normalizeEnglishComment,
-  // onCopy: normalizeJpPDF,
-  onCopy: jpPDFIntoBulletPoints,
+  onCopy: normalizeJpPDF,
+  // onCopy: jpPDFIntoBulletPoints,
   // onCopy: indexToMD,
   watch: true,
 } satisfies Config;
