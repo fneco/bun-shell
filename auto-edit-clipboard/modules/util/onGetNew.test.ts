@@ -16,18 +16,26 @@ test("`callback` is called only when a different `input` is entered than the pre
 });
 
 test("how to use dependency.", () => {
+  const repeatTwo = (x: string) => x + x;
   const hash = mock((x: string) => x);
-  const test_onGetNew = _onGetNew({ hash: hash });
+  const test_onGetNew = _onGetNew({ hash });
 
-  expect(hash).toHaveBeenCalledTimes(1); // 初期化で呼ばれる
-  expect(hash).toHaveBeenCalledWith(""); // 空文字列で初期化される
+  expect(hash).toHaveBeenNthCalledWith(1, ""); // 空文字列で初期化される
 
-  test_onGetNew("a", (x) => x);
-  expect(hash).toHaveBeenCalledTimes(3); // 初回では2度呼ばれる
+  //初回呼び出し
+  test_onGetNew("a", repeatTwo);
+  expect(hash).toHaveBeenCalledTimes(3);
+  expect(hash).toHaveBeenNthCalledWith(2, "a"); // 入力値を受け取る
+  expect(hash).toHaveBeenNthCalledWith(3, "aa"); // 結果値を受け取る
 
-  test_onGetNew("a", (x) => x);
-  expect(hash).toHaveBeenCalledTimes(4); // 前回("a")と同一の`input`の場合1度のみ呼ばれる
+  // 今回入力値("aa")と前回結果値("aa")とが同一の場合
+  test_onGetNew("aa", repeatTwo);
+  expect(hash).toHaveBeenCalledTimes(4);
+  expect(hash).toHaveBeenNthCalledWith(4, "aa"); // 入力値を受け取る
 
-  test_onGetNew("b", (x) => x);
-  expect(hash).toHaveBeenCalledTimes(6); // 前回("a")と異なる`input`("b")の場合2度呼ばれる
+  // 今回入力値("b")と前回結果値("aa")とが異なるの場合
+  test_onGetNew("b", repeatTwo);
+  expect(hash).toHaveBeenCalledTimes(6);
+  expect(hash).toHaveBeenNthCalledWith(5, "b"); // 入力値を受け取る
+  expect(hash).toHaveBeenNthCalledWith(6, "bb"); // 結果値を受け取る
 });
