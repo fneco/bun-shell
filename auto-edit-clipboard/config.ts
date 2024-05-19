@@ -11,7 +11,7 @@ const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^[●|·|•|r]\s?(.*)$/gm, "- $1");
+  str.replace(/^\s?[●|·|•|r |⁃]\s+(.*)$/gm, "- $1");
 
 const joinLines = piped(joinAlphabetText, joinTextExpectBulletPoints);
 
@@ -24,7 +24,7 @@ const suppressDots = (str: string) =>
     .replace(/\.{4,}/gm, "...")
     .replace(/(· )/gm, "·")
     .replace(/(·){4,}/gm, "···");
-const addH2 = (str: string) => str.replace(/^第(.*)章/gm, "## 第 $1 章");
+const addH2 = (str: string) => str.replace(/^第 +?(.*) +?章/gm, "## 第 $1 章");
 const addH3 = (str: string) => str.replace(/^(\d+\.\d+ )/gm, "### $1");
 const tmp = (str: string) =>
   str.replace(/^(.+)$/gm, "- $1").replace(/- #/g, "#");
