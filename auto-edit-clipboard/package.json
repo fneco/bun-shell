@@ -12,6 +12,7 @@
     "clipboard-event": "^1.6.0",
     "clipboardy": "^4.0.0",
     "p-debounce": "^4.0.0",
+    "p-limit": "^5.0.0",
     "remeda": "^1.60.1"
   },
   "scripts": {

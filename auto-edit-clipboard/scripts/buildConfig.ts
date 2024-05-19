@@ -1,7 +1,9 @@
-import { watch as bunWatch } from "fs/promises";
+import { watch as bunWatch } from "fs";
 import { parseArgs } from "util";
+import { oneAtATime } from "../modules/util";
 
 const entrypoint = "./config.ts";
+const dependingFolder = "./modules";
 
 const {
   values: { watch },
@@ -11,7 +13,7 @@ const {
   options: { watch: { type: "boolean" } },
 });
 
-async function build() {
+const build = oneAtATime(async function build() {
   const output = await Bun.build({ entrypoints: [entrypoint] });
 
   if (!output.success) {
@@ -24,14 +26,15 @@ async function build() {
   }
   const buildArtifact = output.outputs[0];
   await Bun.write(buildArtifact.path, buildArtifact);
-}
+});
 await build();
 
 if (watch) {
-  const watcher = bunWatch(entrypoint);
-  console.log(`start watching: ${entrypoint}`);
-  for await (const event of watcher) {
-    console.log(`Detected ${event.eventType} in ${event.filename}`);
-    await build();
-  }
+  const cb = (event: string, filename: string | null) => {
+    console.log(`Detected ${event} in ${filename}`);
+    build();
+  };
+  console.log(`start watching`);
+  bunWatch(dependingFolder, { recursive: true }, cb);
+  bunWatch(entrypoint, cb);
 }
