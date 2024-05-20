@@ -9,7 +9,8 @@ const getConfig = pDebounce(async () => importConfig(path), 200, {
 });
 const config = await getConfig();
 
-const { restart } = await startListening(getConfig);
+const { restart, toggleListening /*TODO: use toggleListening*/ } =
+  await startListening(getConfig);
 
 if (config.watch ?? true) {
   const watcher = watch(path);

@@ -2,6 +2,7 @@ import { $ } from "bun";
 import clipboardListener from "clipboard-event";
 import clipboard from "clipboardy";
 import { join } from "path";
+import { toggleFunctions } from "../modules/util";
 import { onGetNew } from "../modules/util/onGetNew";
 import type { Config } from "../type";
 
@@ -30,9 +31,7 @@ const _stopListening = () => {
 
 export const startListening = async (
   getOnCopy: () => Promise<{ onCopy: Config["onCopy"] }>
-): Promise<{
-  restart: () => Promise<void>;
-}> => {
+) => {
   const listen = async () => {
     await _startListening();
     const { onCopy } = await getOnCopy();
@@ -53,5 +52,11 @@ export const startListening = async (
     return;
   };
 
-  return { restart };
+  const toggleListening = toggleFunctions(async () => {
+    _stopListening();
+    console.log("stop listening.");
+    return Promise.resolve();
+  }, listen);
+
+  return { restart, toggleListening };
 };
