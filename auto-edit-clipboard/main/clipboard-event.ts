@@ -25,6 +25,7 @@ const _stopListening = () => {
     console.log(`killing failed`);
     process.exit();
   }
+  clipboardListener.removeAllListeners(EVENT_NAME); // https://nodejs.org/api/events.html#emitterremovealllistenerseventname
 };
 
 export const startListening = async (
@@ -47,9 +48,9 @@ export const startListening = async (
   await listen();
 
   const restart = async () => {
-    clipboardListener.removeAllListeners(EVENT_NAME); // https://nodejs.org/api/events.html#emitterremovealllistenerseventname
     _stopListening();
-    return listen();
+    listen();
+    return;
   };
 
   return { restart };
