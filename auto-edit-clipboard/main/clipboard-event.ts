@@ -36,6 +36,10 @@ export const startListening = async (
     await _startListening();
     const { onCopy } = await getOnCopy();
     clipboardListener.on(EVENT_NAME, () => {
+      // when taking a screenshot on a Mac
+      if (clipboard.readSync() === "") {
+        return;
+      }
       onGetNew(clipboard.readSync(), (clipboardString) => {
         const edited = onCopy(clipboardString);
         clipboard.writeSync(edited);
