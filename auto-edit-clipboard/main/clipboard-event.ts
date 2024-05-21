@@ -2,8 +2,7 @@ import { $ } from "bun";
 import clipboardListener from "clipboard-event";
 import clipboard from "clipboardy";
 import { join } from "path";
-import { toggleFunctions } from "../modules/util";
-import { onGetNew } from "../modules/util/onGetNew";
+import { onGetNew, toggleFunctions } from "../modules/util";
 import type { Config } from "../type";
 
 const EVENT_NAME = "change"; // https://github.com/sudhakar3697/node-clipboard-event/blob/0879a167f5643908349ff6b70a9365f9acdb652e/index.js#L29
@@ -48,7 +47,7 @@ export const startListening = async (
 
   const restart = async () => {
     _stopListening();
-    listen();
+    await listen();
     return;
   };
 
