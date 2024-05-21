@@ -11,8 +11,7 @@ const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^\s?[●|·|•|r |⁃]\s+(.*)$/gm, "- $1");
-
+  str.replace(/^\s?(●|·|•|⁃|r )\s?(.*)$/gm, "- $2");
 const joinLines = piped(joinAlphabetText, joinTextExpectBulletPoints);
 
 const splitJPTextByPunctuationMark = (str: string) =>
