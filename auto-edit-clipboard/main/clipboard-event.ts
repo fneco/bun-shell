@@ -2,7 +2,7 @@ import { $ } from "bun";
 import clipboardListener from "clipboard-event";
 import clipboard from "clipboardy";
 import { join } from "path";
-import { onGetNew, toggleFunctions } from "../modules/util";
+import { createOnGetNew, toggleFunctions } from "../modules/util";
 import type { Config } from "../type";
 
 const EVENT_NAME = "change"; // https://github.com/sudhakar3697/node-clipboard-event/blob/0879a167f5643908349ff6b70a9365f9acdb652e/index.js#L29
@@ -32,6 +32,7 @@ export const startListening = async (
   getOnCopy: () => Promise<{ onCopy: Config["onCopy"] }>
 ) => {
   const listen = async () => {
+    const onGetNew = createOnGetNew();
     await _startListening();
     const { onCopy } = await getOnCopy();
     clipboardListener.on(EVENT_NAME, () => {

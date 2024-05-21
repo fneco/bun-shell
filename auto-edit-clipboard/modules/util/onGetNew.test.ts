@@ -1,7 +1,9 @@
 import { expect, mock, test } from "bun:test";
-import { _onGetNew, onGetNew } from "./onGetNew";
+import { _onGetNew, createOnGetNew } from "./onGetNew";
 
 test("`callback` is called only when a different `input` is entered than the previous one.", () => {
+  const onGetNew = createOnGetNew();
+
   const fn = mock((x: string) => x);
   onGetNew("a", fn);
   expect(fn).toHaveBeenCalledTimes(1);
