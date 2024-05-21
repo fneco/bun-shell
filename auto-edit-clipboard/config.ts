@@ -9,9 +9,12 @@ const deleteLastNewLine = (str: string) => str.replace(/(\r\n|\n|\r)$/g, "");
 const deleteInitialNewLine = (str: string) => str.replace(/^(\r\n|\n|\r)/g, "");
 const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
+const deleteUnnecessaryEdge = (str: string) =>
+  str.replace(/^.{0,3}(、|。)\s?/g, "").replace(/(、|。)\n?.{0,3}$/g, "$1");
+
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^\s?(●|·|•|⁃|r )\s?(.*)$/gm, "- $2");
+  str.replace(/^\s?(●|·|•|⁃|r )\s*(.*)$/gm, "- $2");
 const joinLines = piped(joinAlphabetText, joinTextExpectBulletPoints);
 
 const splitJPTextByPunctuationMark = (str: string) =>
@@ -32,15 +35,24 @@ const tmp = (str: string) =>
 const indexToMD = piped(suppressDots, addH2, addH3, tmp);
 const normalizeEnglishComment = piped(deleteComment, joinAlphabetText);
 const normalizeJpPDF = piped(
+  log("before", { initial: true }),
+  // log("before deleteUnnecessaryEdge", { initial: true }),
+  deleteUnnecessaryEdge,
+  // log("after deleteUnnecessaryEdge"),
+  // log("before normalizeBulletPoints", { initial: true }),
   normalizeBulletPoints,
+  // log("after normalizeBulletPoints"),
+  // log("before joinLines", { initial: true }),
   joinLines,
+  // log("after joinLines"),
   deleteSpaceBetweenNonAscii,
-  splitJPTextByPunctuationMark
+  splitJPTextByPunctuationMark,
+  log("after")
 );
 const jpPDFIntoBulletPoints = piped(
-  log("before jpPDFIntoBulletPoints", { initial: true }),
+  log("before normalizeJpPDF", { initial: true }),
   normalizeJpPDF,
-  log("after jpPDFIntoBulletPoints"),
+  log("after normalizeJpPDF"),
   addMDBulletPoints
 );
 
