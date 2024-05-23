@@ -9,12 +9,12 @@ type Case<T extends (...args: any) => any> = [...Parameters<T>, ReturnType<T>];
 
 describe("shouldAppend", () => {
   const line = "line without bullet point";
-  const lineStartWithBulletPoint = "- line";
+  const lineWithBulletPoint = "- line";
   const cases = [
     [line, [line], false], // false || false || false
-    [lineStartWithBulletPoint, [line], true], // true
+    [lineWithBulletPoint, [line], true], // true
     [line, [], true], // false || true
-    [line, [lineStartWithBulletPoint], true], // false || false || true
+    [line, [lineWithBulletPoint], true], // false || false || true
   ] as Case<typeof _shouldAppend>[];
 
   test.each(cases)("%p, %p, %p should be %p", (a, b, expected) => {
@@ -54,5 +54,16 @@ test("example 2", () => {
 ルドされるもの。`;
   const expected = `- モジュール（module） またはコンポーネント（component） ― アプリケーションの
 ソースコードの一部で、別々のフォルダで管理され、別々のバイナリファイルとしてビルドされるもの。`;
+  expect(joinTextExpectBulletPoints(input)).toBe(expected);
+});
+
+test("example 3", () => {
+  const input = `- 管理ポリシー
+- インラインポリシー（インラインアイデンティティポリシー）
+  - 特定の IAM ロール、IAM ユーザー、IAM グループに所属するアイデンティティポリシー
+  - インラインアイデンティティポリシーは、その所属先となるロール、ユーザー、グループなしには存在できない
+  - CloudFormation を利用すれば、インラインアイデンティティポリシーを管理するのは簡単です
+    - そこで本書では、ほとんどの場合、インラインアイデンティティポリシーを使います。`;
+  const expected = input;
   expect(joinTextExpectBulletPoints(input)).toBe(expected);
 });

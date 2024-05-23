@@ -1,7 +1,9 @@
-import { newLine } from "./regex";
+import { bulletPoint, newLine } from "./regex";
+
+export const isBulletPoint = (str: string) => bulletPoint.test(str);
 
 export const _shouldAppend = (line: string, acc: string[]) =>
-  line.startsWith("- ") ||
+  isBulletPoint(line) ||
   acc.length === 0 ||
   acc[acc.length - 1].startsWith("- ");
 
