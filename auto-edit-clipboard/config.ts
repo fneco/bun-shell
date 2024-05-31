@@ -10,7 +10,7 @@ const deleteInitialNewLine = (str: string) => str.replace(/^(\r\n|\n|\r)/g, "");
 const deleteAroundNewLine = piped(deleteInitialNewLine, deleteLastNewLine);
 
 const deleteUnnecessaryEdge = (str: string) =>
-  str.replace(/^.{0,3}(、|。)\s?/g, "").replace(/(、|。)\n?.{0,3}$/g, "$1");
+  str.replace(/^.{0,1}(、|。)\s?/g, "").replace(/(、|。)\n?.{0,3}$/g, "$1");
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
@@ -25,14 +25,29 @@ const suppressDots = (str: string) =>
   str
     .replace(/\.{4,}/gm, "...")
     .replace(/(· )/gm, "·")
-    .replace(/(·){4,}/gm, "···");
-const addH2 = (str: string) => str.replace(/^第 +?(.*) +?章/gm, "## 第 $1 章");
-const addH3 = (str: string) => str.replace(/^(\d+\.\d+ )/gm, "### $1");
-const tmp = (str: string) =>
+    .replace(/(·){4,}/gm, "···")
+    .replace(/(…){2,}/gm, "…");
+const addH2章 = (str: string) =>
+  str.replace(/^(第\s*)(.*)(\s*章)/gm, "## 第 $2 章");
+const addH2CHAPTER = (str: string) =>
+  str.replace(/^\s*(CHAPTER\d+)\s*(.*)/gim, "## $1 $2");
+const addH3TwoNumberSeparatedDot = (str: string) =>
+  str.replace(/^(\d+\.\d+\s+)/gm, "### $1");
+const addH3TwoDigitNumber = (str: string) => str.replace(/^(\d\d)/gm, "### $1");
+const addBulletPoints = (str: string) =>
   str.replace(/^(.+)$/gm, "- $1").replace(/- #/g, "#");
+const tmp = (str: string) => str.replace(/###.*(\r|\n|.)/g, "");
 
 // examples
-const indexToMD = piped(suppressDots, addH2, addH3, tmp);
+const indexToMD = piped(
+  log("indexToMD: before", { initial: true }),
+  suppressDots,
+  addH2章,
+  addH3TwoNumberSeparatedDot,
+  addBulletPoints,
+  // tmp,
+  log("indexToMD: after")
+);
 const normalizeEnglishComment = piped(deleteComment, joinAlphabetText);
 const normalizeJpPDF = piped(
   log("before", { initial: true }),

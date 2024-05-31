@@ -1,7 +1,7 @@
 import { tap } from "remeda";
 
 let debug: boolean = false;
-// debug = true;
+debug = true;
 
 let counter = 0;
 export const log = (
@@ -15,9 +15,9 @@ export const log = (
   }
   const c = ++counter;
   return tap((x) => {
-    console.log(`======= ${c}${txt ? ` : ${txt}` : ""} =======`);
+    console.log(`>>>>> ${c}${txt ? ` : ${txt}` : ""} >>>>>`);
     console.log(x);
+    console.log(`<<<<<`);
     console.log();
-    return x;
   });
 };
