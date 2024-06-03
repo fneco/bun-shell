@@ -1,4 +1,4 @@
-import { ascii } from "./regex";
+import { ascii } from "./util/regex";
 
 export const _deleteNonAscii = (x: string) =>
   x.replace(new RegExp(`[^${ascii}]`, "g"), "");
