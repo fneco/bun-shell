@@ -1,7 +1,10 @@
 import { piped } from "remeda";
-import { deleteSpaceBetweenNonAscii } from "./modules/converter/deleteSpaceBetweenNonAscii";
-import { joinAlphabetText } from "./modules/converter/joinAlphabetText";
-import { joinTextExpectBulletPoints } from "./modules/converter/joinTextExpectBulletPoints";
+import {
+  addBulletPoints,
+  deleteSpaceBetweenNonAscii,
+  joinAlphabetText,
+  joinTextExpectBulletPoints,
+} from "./modules/converter";
 import { log } from "./modules/debug/log";
 import type { Config } from "./type";
 
@@ -26,26 +29,29 @@ const suppressDots = (str: string) =>
     .replace(/\.{4,}/gm, "...")
     .replace(/(· )/gm, "·")
     .replace(/(·){4,}/gm, "···")
-    .replace(/(…){2,}/gm, "…");
+    .replace(/(…){2,}/gm, "…")
+    .replace(/(・){4,}/gm, "・・・");
 const addH2章 = (str: string) =>
   str.replace(/^(第\s*)(.*)(\s*章)/gm, "## 第 $2 章");
-const addH2CHAPTER = (str: string) =>
-  str.replace(/^\s*(CHAPTER\d+)\s*(.*)/gim, "## $1 $2");
-const addH3TwoNumberSeparatedDot = (str: string) =>
-  str.replace(/^(\d+\.\d+\s+)/gm, "### $1");
-const addH3TwoDigitNumber = (str: string) => str.replace(/^(\d\d)/gm, "### $1");
-const addBulletPoints = (str: string) =>
-  str.replace(/^(.+)$/gm, "- $1").replace(/- #/g, "#");
-const tmp = (str: string) => str.replace(/###.*(\r|\n|.)/g, "");
-
+const addH2Chapter = (str: string) =>
+  str.replace(/^\s*(CHAPTER)\s*(\d+)\s*(.*)/gim, "## $1 $2 $3");
+const addH3TwoNumberSeparated = (str: string) =>
+  str.replace(/^\s*(\d+)\s*(.|-)\s*(\d+)\s*([^.|-])/gm, "### $1$2$3 $4");
+const addH3TwoDigitNumber = (str: string) =>
+  str.replace(/^\s*(\d\d)/gm, "### $1");
+const addBPToThreeNumberSeparated = (str: string) =>
+  str.replace(
+    /^\s*(\d+)\s*(.|-)\s*(\d+)\s*(.|-)\s*(\d+)\s*/gm,
+    "- $1$2$3$4$5 "
+  );
 // examples
 const indexToMD = piped(
   log("indexToMD: before", { initial: true }),
   suppressDots,
-  addH2章,
-  addH3TwoNumberSeparatedDot,
+  addH2Chapter,
+  addH3TwoNumberSeparated,
+  addBPToThreeNumberSeparated,
   addBulletPoints,
-  // tmp,
   log("indexToMD: after")
 );
 const normalizeEnglishComment = piped(deleteComment, joinAlphabetText);
@@ -74,8 +80,8 @@ const jpPDFIntoBulletPoints = piped(
 // example
 export default {
   // onCopy: normalizeEnglishComment,
-  onCopy: normalizeJpPDF,
   // onCopy: jpPDFIntoBulletPoints,
-  // onCopy: indexToMD,
+  // onCopy: normalizeJpPDF,
+  onCopy: indexToMD,
   watch: true,
 } satisfies Config;
