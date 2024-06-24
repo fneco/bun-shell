@@ -1,6 +1,4 @@
-# bun-build
-
-## How to use
+# fixup
 
 To install dependencies:
 
@@ -8,10 +6,10 @@ To install dependencies:
 bun install
 ```
 
-To build check-port for example:
+To run:
 
 ```bash
-sudo bun run index.ts ../check-port
+bun run index.ts
 ```
 
 This project was created using `bun init` in bun v1.0.25. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
