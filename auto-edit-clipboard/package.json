@@ -16,6 +16,7 @@
     "remeda": "^1.60.1"
   },
   "scripts": {
-    "start": "bun run index.ts"
+    "start": "bun run index.ts",
+    "watch:config": "bun run ./scripts/buildConfig.ts"
   }
 }
