@@ -17,7 +17,7 @@ const deleteUnnecessaryEdge = (str: string) =>
 
 const deleteComment = (str: string) => str.replace(/\s?\/\/\s/gm, "");
 const normalizeBulletPoints = (str: string) =>
-  str.replace(/^\s?(●|·|•|⁃|r )\s*(.*)$/gm, "- $2");
+  str.replace(/^\s?(●|·|•|⁃|r |⿠)\s*(.*)$/gm, "- $2");
 const joinLines = piped(joinAlphabetText, joinTextExpectBulletPoints);
 
 const splitJPTextByPunctuationMark = (str: string) =>
@@ -26,13 +26,14 @@ const splitJPTextByPunctuationMark = (str: string) =>
 const addMDBulletPoints = (str: string) => str.replace(/^([^-].*)$/gm, "- $1");
 const suppressDots = (str: string) =>
   str
+    .replace(/(�)/gm, ".")
     .replace(/\.{4,}/gm, "...")
     .replace(/(· )/gm, "·")
     .replace(/(·){4,}/gm, "···")
     .replace(/(…){2,}/gm, "…")
     .replace(/(・){4,}/gm, "・・・");
 const addH2章 = (str: string) =>
-  str.replace(/^(第\s*)(.*)(\s*章)/gm, "## 第 $2 章");
+  str.replace(/^\s*(第\s*)(.*)(\s*章)/gm, "## 第 $2 章");
 const addH2Chapter = (str: string) =>
   str.replace(/^\s*(CHAPTER)\s*(\d+)\s*(.*)/gim, "## $1 $2 $3");
 const addH3TwoNumberSeparated = (str: string) =>
@@ -48,7 +49,7 @@ const addBPToThreeNumberSeparated = (str: string) =>
 const indexToMD = piped(
   log("indexToMD: before", { initial: true }),
   suppressDots,
-  addH2Chapter,
+  addH2章,
   addH3TwoNumberSeparated,
   addBPToThreeNumberSeparated,
   addBulletPoints,
@@ -81,7 +82,7 @@ const jpPDFIntoBulletPoints = piped(
 export default {
   // onCopy: normalizeEnglishComment,
   // onCopy: jpPDFIntoBulletPoints,
-  // onCopy: normalizeJpPDF,
-  onCopy: indexToMD,
+  onCopy: normalizeJpPDF,
+  // onCopy: indexToMD,
   watch: true,
 } satisfies Config;
